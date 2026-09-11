@@ -9,14 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          navy: "#152935",
-          blue: "#698EA2",
-          orange: "#E4A576",
-          gray: "#CCD5D2",
-          peach: "#FDE5D6",
-          border: "#CCD5D2",
-        },
+        navy: "#152935",
+        brandBlue: "#698ea2",
+        brandOrange: "#e4a576",
+        brandGray: "#ccd5d2",
+        brandPeach: "#fde5d6",
       },
     },
   },

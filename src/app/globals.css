@@ -2,16 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --navy: #152935;
-  --blue: #698ea2;
-  --orange: #e4a576;
-  --gray: #ccd5d2;
-  --peach: #fde5d6;
-}
-
+html,
 body {
+  padding: 0;
+  margin: 0;
   background-color: #ffffff;
   color: #152935;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
