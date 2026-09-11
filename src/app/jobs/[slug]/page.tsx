@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getJobBySlug } from "@/lib/api/services";
-import { ShieldCheck, Calendar, Users, ExternalLink, ChevronRight, CheckCircle2, Clock } from "lucide-react";
+import { ShieldCheck, ChevronRight, ExternalLink, Clock, CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 
 interface Props {
@@ -13,8 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const job = await getJobBySlug(slug);
   if (!job) return { title: "Job Notification | NiyogDisha" };
   return {
-    title: job.seo_title || `${job.title} — Notification, Apply Online & Dates`,
-    description: job.seo_description || `${job.title}: Check vacancies, eligibility, qualification, age limit and official apply links.`,
+    title: `${job.title} — Notification, Dates & Apply Online`,
+    description: job.seo_description || `${job.title}: Check official vacancies, age limit, selection process, and apply online links.`,
+    alternates: {
+      canonical: `https://niyogdisha-frontend.onrender.com/jobs/${job.slug}`,
+    },
   };
 }
 
@@ -26,87 +29,120 @@ export default async function JobDetailPage({ params }: Props) {
     notFound();
   }
 
+  // Google JobPosting Structured Data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": job.title,
+    "description": job.description || job.title,
+    "datePosted": job.published_at || new Date().toISOString(),
+    "validThrough": job.last_date || undefined,
+    "employmentType": job.employment_type || "FULL_TIME",
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": job.organization?.name || "Government Commission",
+      "sameAs": job.organization?.official_website || "https://ssc.gov.in",
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN",
+      },
+    },
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1.5 text-xs text-brand-muted mb-4">
-        <Link href="/" className="hover:text-brand-navy">Home</Link>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      {/* Schema Script Injection */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* Breadcrumb Navigation */}
+      <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
+        <Link href="/" className="hover:text-[#152935]">Home</Link>
         <ChevronRight className="w-3 h-3" />
-        <Link href="/jobs" className="hover:text-brand-navy">Jobs</Link>
+        <Link href="/jobs" className="hover:text-[#152935]">Jobs</Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-brand-navy font-medium line-clamp-1">{job.short_title || job.title}</span>
+        <span style={{ color: "#152935" }} className="font-semibold line-clamp-1">
+          {job.short_title || job.title}
+        </span>
       </nav>
 
-      {/* Main Header */}
-      <div className="border-b border-brand-border pb-6">
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded bg-brand-peach text-brand-navy mb-2 border border-brand-orange/30">
-          <ShieldCheck className="w-3.5 h-3.5 text-brand-blue" />
+      {/* Header */}
+      <div style={{ borderBottom: "1px solid #CCD5D2" }} className="pb-6">
+        <div style={{ backgroundColor: "#FDE5D6", border: "1px solid #E4A576", color: "#152935" }} className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded mb-2">
+          <ShieldCheck className="w-3.5 h-3.5" style={{ color: "#698EA2" }} />
           <span>Verified Official Recruitment</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-navy leading-tight">
+        <h1 style={{ color: "#152935" }} className="text-2xl sm:text-3xl font-extrabold leading-tight">
           {job.title}
         </h1>
-        <p className="text-sm text-brand-muted mt-2">
-          Organization: <strong className="text-brand-navy">{job.organization?.name || "Official Commission"}</strong>
+        <p style={{ color: "#5F6B72" }} className="text-xs sm:text-sm mt-2">
+          Official Authority: <strong style={{ color: "#152935" }}>{job.organization?.name || "Official Commission"}</strong>
         </p>
       </div>
 
-      {/* Differentiator: Exam Lifecycle Tracker */}
-      <div className="my-8 p-5 rounded-lg border border-brand-border bg-gradient-to-r from-brand-peach/30 to-white">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-brand-navy mb-4 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-brand-blue" />
-          Recruitment Lifecycle Progress
+      {/* Exam Lifecycle Visual Bar */}
+      <div style={{ backgroundColor: "#FAF3EE", borderColor: "#CCD5D2" }} className="my-6 p-5 rounded-lg border">
+        <h2 style={{ color: "#152935" }} className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4" style={{ color: "#698EA2" }} />
+          Recruitment Lifecycle Status
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="flex items-center gap-2 text-green-800 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <span>Notification Released</span>
+          <div className="flex items-center gap-2 text-emerald-800 font-semibold">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>Notification Active</span>
           </div>
-          <div className="flex items-center gap-2 text-green-800 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <span>Application Active</span>
+          <div className="flex items-center gap-2 text-emerald-800 font-semibold">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>Applications Open</span>
           </div>
-          <div className="flex items-center gap-2 text-brand-muted font-medium">
-            <span className="w-4 h-4 rounded-full border border-brand-border flex items-center justify-center text-[10px]">3</span>
-            <span>Admit Card Awaited</span>
+          <div className="flex items-center gap-2 text-gray-500 font-medium">
+            <span className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center text-[10px]">3</span>
+            <span>Admit Card Stage</span>
           </div>
-          <div className="flex items-center gap-2 text-brand-muted font-medium">
-            <span className="w-4 h-4 rounded-full border border-brand-border flex items-center justify-center text-[10px]">4</span>
-            <span>Result &amp; Cutoff</span>
+          <div className="flex items-center gap-2 text-gray-500 font-medium">
+            <span className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center text-[10px]">4</span>
+            <span>Results / Cutoff</span>
           </div>
         </div>
       </div>
 
-      {/* Key Quick Info Table */}
-      <div className="border border-brand-border rounded-lg overflow-hidden my-6">
-        <div className="bg-brand-navy text-white px-4 py-2.5 text-sm font-bold">
-          Quick Recruitment Overview
+      {/* Quick Overview Table */}
+      <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg overflow-hidden my-6">
+        <div style={{ backgroundColor: "#152935", color: "#FFFFFF" }} className="px-4 py-2.5 text-xs sm:text-sm font-bold">
+          Important Recruitment Summary
         </div>
-        <div className="divide-y divide-brand-border text-sm">
+        <div style={{ borderColor: "#CCD5D2" }} className="divide-y text-xs sm:text-sm">
           <div className="grid grid-cols-3 p-3">
-            <span className="font-semibold text-brand-muted">Total Vacancies</span>
-            <span className="col-span-2 font-bold text-brand-navy">{job.total_vacancies?.toLocaleString() || "Not announced"}</span>
+            <span className="font-semibold text-gray-500">Total Vacancies</span>
+            <span style={{ color: "#152935" }} className="col-span-2 font-bold">{job.total_vacancies?.toLocaleString() || "Not announced"}</span>
           </div>
-          <div className="grid grid-cols-3 p-3 bg-brand-peach/10">
-            <span className="font-semibold text-brand-muted">Application Deadline</span>
-            <span className="col-span-2 font-bold text-brand-navy">
+          <div style={{ backgroundColor: "#FAF3EE" }} className="grid grid-cols-3 p-3">
+            <span className="font-semibold text-gray-500">Application Deadline</span>
+            <span style={{ color: "#152935" }} className="col-span-2 font-bold">
               {job.last_date ? new Date(job.last_date).toLocaleDateString("en-IN", { dateStyle: "long" }) : "Not announced"}
             </span>
           </div>
           <div className="grid grid-cols-3 p-3">
-            <span className="font-semibold text-brand-muted">Mode of Application</span>
-            <span className="col-span-2 font-medium text-brand-navy">{job.application_mode || "Online"}</span>
+            <span className="font-semibold text-gray-500">Mode of Application</span>
+            <span style={{ color: "#152935" }} className="col-span-2 font-medium">{job.application_mode || "ONLINE"}</span>
           </div>
-          <div className="grid grid-cols-3 p-3 bg-brand-peach/10">
-            <span className="font-semibold text-brand-muted">Employment Type</span>
-            <span className="col-span-2 font-medium text-brand-navy">{job.employment_type || "Permanent"}</span>
+          <div style={{ backgroundColor: "#FAF3EE" }} className="grid grid-cols-3 p-3">
+            <span className="font-semibold text-gray-500">Employment Type</span>
+            <span style={{ color: "#152935" }} className="col-span-2 font-medium">{job.employment_type || "PERMANENT"}</span>
           </div>
         </div>
       </div>
 
-      {/* Official Links */}
+      {/* Official Working Links */}
       <div className="my-8">
-        <h2 className="text-lg font-bold text-brand-navy mb-3">Important Official Links</h2>
+        <h2 style={{ color: "#152935" }} className="text-base sm:text-lg font-bold mb-3">
+          Verified Official Portal Links
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {job.links && job.links.length > 0 ? (
             job.links.map((link) => (
@@ -115,10 +151,11 @@ export default async function JobDetailPage({ params }: Props) {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded border border-brand-border hover:border-brand-navy bg-white hover:bg-brand-peach/20 transition-all font-semibold text-sm text-brand-navy"
+                style={{ borderColor: "#CCD5D2", color: "#152935" }}
+                className="flex items-center justify-between p-4 rounded-lg border bg-white hover:bg-[#FAF3EE] font-bold text-xs sm:text-sm transition-all"
               >
                 <span>{link.title}</span>
-                <ExternalLink className="w-4 h-4 text-brand-blue" />
+                <ExternalLink className="w-4 h-4 text-[#698EA2]" />
               </a>
             ))
           ) : (
@@ -126,10 +163,11 @@ export default async function JobDetailPage({ params }: Props) {
               href="https://ssc.gov.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between p-3.5 rounded border border-brand-border bg-white font-semibold text-sm text-brand-navy"
+              style={{ borderColor: "#CCD5D2", color: "#152935" }}
+              className="flex items-center justify-between p-4 rounded-lg border bg-white font-bold text-xs sm:text-sm"
             >
-              <span>Official Recruitment Portal</span>
-              <ExternalLink className="w-4 h-4 text-brand-blue" />
+              <span>Official Government Portal</span>
+              <ExternalLink className="w-4 h-4 text-[#698EA2]" />
             </a>
           )}
         </div>
