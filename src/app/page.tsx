@@ -81,6 +81,7 @@ export default async function HomePage() {
 
   return (
     <div className="w-full bg-white min-h-screen text-gray-900">
+      {/* Top Banner Stripe */}
       <div style={{ backgroundColor: "#152935", color: "#FDE5D6" }} className="w-full py-2 px-4 text-center text-xs sm:text-sm font-bold tracking-wide border-b border-[#CCD5D2]">
         ⚡ Verified Sarkari Recruitment &amp; Exam Lifecycle Portal 2026 — Official Source Mapped
       </div>
@@ -317,7 +318,7 @@ export default async function HomePage() {
           </div>
 
           {/* Latest Notifications Column */}
-          <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-sm flex flex-col">
+          <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-xs flex flex-col">
             <div style={{ backgroundColor: "#152935", borderBottom: "3px solid #E4A576" }} className="text-white px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-xs sm:text-sm tracking-wide">
                 <FileText className="w-4 h-4 text-[#E4A576]" />
@@ -469,7 +470,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <footer style={{ backgroundColor: "#152935", color: "#FDE5D6" }} className="mt-12 py-8 px-4 text-xs">
+      {/* SINGLE CLEAN UNIFIED FOOTER */}
+      <footer style={{ backgroundColor: "#152935", color: "#FDE5D6" }} className="mt-12 py-8 px-4 text-xs border-t border-[#CCD5D2]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <div>
             <h3 className="font-bold text-sm text-white mb-2">NiyogDisha</h3>
