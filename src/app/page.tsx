@@ -9,11 +9,10 @@ export default async function HomePage() {
   let results: any[] = [];
 
   try {
-    const [jobsData, admitCardsData, resultsData] = await Promise.all([
-      getJobs(),
-      getAdmitCards(),
-      getResults(),
-    ]);
+    const jobsData = (await getJobs()) as any;
+    const admitCardsData = (await getAdmitCards()) as any;
+    const resultsData = (await getResults()) as any;
+
     jobs = Array.isArray(jobsData) ? jobsData : (jobsData?.data || []);
     admitCards = Array.isArray(admitCardsData) ? admitCardsData : (admitCardsData?.data || []);
     results = Array.isArray(resultsData) ? resultsData : (resultsData?.data || []);
