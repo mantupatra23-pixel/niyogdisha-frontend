@@ -1,13 +1,25 @@
 import Link from "next/link";
 import { Search, Calendar, ChevronRight, ShieldCheck, ArrowUpRight, Award, FileText, CheckCircle2 } from "lucide-react";
-import { getJobs, getAdmitCards, getResults } from "@/lib/api/services";
+import { fetchJobs, fetchAdmitCards, fetchResults } from "@/lib/api";
+import CategoryGrid from "@/components/ui/CategoryGrid";
 
 export default async function HomePage() {
-  const [jobs, admitCards, results] = await Promise.all([
-    getJobs({ limit: 8, status: "PUBLISHED" }),
-    getAdmitCards(),
-    getResults(),
-  ]);
+  let jobs: any[] = [];
+  let admitCards: any[] = [];
+  let results: any[] = [];
+
+  try {
+    const [jobsData, admitCardsData, resultsData] = await Promise.all([
+      fetchJobs(),
+      fetchAdmitCards(),
+      fetchResults(),
+    ]);
+    jobs = jobsData?.data || [];
+    admitCards = admitCardsData?.data || [];
+    results = resultsData?.data || [];
+  } catch (err) {
+    // Graceful fallback on network/API failure
+  }
 
   return (
     <div className="w-full bg-white min-h-screen">
@@ -59,13 +71,13 @@ export default async function HomePage() {
           <div className="flex flex-wrap justify-center items-center gap-2 text-xs">
             <span style={{ color: "#5F6B72" }} className="font-semibold mr-1">Popular:</span>
             {[
-              { name: "Central Govt", href: "/jobs?type=CENTRAL" },
-              { name: "State Govt", href: "/jobs?type=STATE" },
-              { name: "SSC Jobs", href: "/jobs?category=ssc" },
-              { name: "UPSC", href: "/jobs?category=upsc" },
-              { name: "Railway", href: "/jobs?category=railway" },
-              { name: "Defence", href: "/jobs?category=defence" },
-              { name: "Banking", href: "/jobs?category=banking" },
+              { name: "Central Govt", href: "/jobs/central-government" },
+              { name: "State Govt", href: "/jobs/state-government" },
+              { name: "SSC Jobs", href: "/jobs/ssc" },
+              { name: "UPSC", href: "/jobs/upsc" },
+              { name: "Railway", href: "/jobs/railway" },
+              { name: "Defence", href: "/jobs/defence" },
+              { name: "Banking", href: "/jobs/banking" },
             ].map((cat) => (
               <Link
                 key={cat.name}
@@ -79,6 +91,11 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Category Grid Component */}
+      <div className="max-w-6xl mx-auto px-4 pt-6">
+        <CategoryGrid />
+      </div>
 
       {/* 2. 3-Column Modern Sarkari Grid */}
       <main className="max-w-6xl mx-auto px-4 py-8">
@@ -99,11 +116,11 @@ export default async function HomePage() {
               {jobs.length === 0 ? (
                 <p className="p-4 text-xs text-gray-500">No active notifications found.</p>
               ) : (
-                jobs.map((job) => (
+                jobs.map((job: any) => (
                   <Link key={job.id} href={`/jobs/${job.slug}`} className="p-4 block hover:bg-[#FDE5D6]/30">
                     <div className="flex items-center justify-between text-[11px] mb-1.5">
                       <span style={{ backgroundColor: "#CCD5D2", color: "#152935" }} className="px-2 py-0.5 rounded font-bold">
-                        {job.organization?.short_name || "CENTRAL"}
+                        {job.organization?.short_name || job.organization?.name || "CENTRAL"}
                       </span>
                       {job.last_date && (
                         <span className="text-gray-500 font-medium">
@@ -143,13 +160,13 @@ export default async function HomePage() {
               {admitCards.length === 0 ? (
                 <p className="p-4 text-xs text-gray-500">No upcoming exam admit cards.</p>
               ) : (
-                admitCards.map((item) => (
+                admitCards.map((item: any) => (
                   <div key={item.id} className="p-4 hover:bg-[#FDE5D6]/30">
                     <span style={{ color: "#698EA2" }} className="text-[11px] font-bold block mb-1">
                       HALL TICKET / ADMIT CARD
                     </span>
                     <a
-                      href={item.download_url}
+                      href={item.download_url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ color: "#152935" }}
@@ -185,13 +202,13 @@ export default async function HomePage() {
               {results.length === 0 ? (
                 <p className="p-4 text-xs text-gray-500">No declared results found.</p>
               ) : (
-                results.map((res) => (
+                results.map((res: any) => (
                   <div key={res.id} className="p-4 hover:bg-[#FDE5D6]/30">
                     <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded inline-block mb-1.5">
                       DECLARED RESULT
                     </span>
                     <a
-                      href={res.result_url}
+                      href={res.result_url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ color: "#152935" }}

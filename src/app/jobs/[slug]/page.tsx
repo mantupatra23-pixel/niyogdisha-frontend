@@ -145,7 +145,7 @@ export default async function JobDetailPage({ params }: Props) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {job.links && job.links.length > 0 ? (
-            job.links.map((link) => (
+            job.links.map((link: any) => (
               <a
                 key={link.id}
                 href={link.url}
