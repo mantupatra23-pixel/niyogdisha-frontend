@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getJobBySlug } from "@/lib/api/services";
+import { getJobBySlug, getJobs } from "@/lib/api/services";
 import { ShieldCheck, ChevronRight, ExternalLink, Clock, CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -8,8 +8,28 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+const CATEGORIES_MAP: Record<string, string> = {
+  "central-government": "Central Government Jobs",
+  "state-government": "State Government Jobs",
+  "railway": "Railway Jobs",
+  "banking": "Banking Jobs",
+  "ssc": "SSC Jobs",
+  "upsc": "UPSC Jobs",
+  "graduate": "Graduate Jobs",
+  "12th-pass": "12th Pass Jobs",
+  "10th-pass": "10th Pass Jobs",
+  "defence": "Defence / Police Jobs",
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (CATEGORIES_MAP[slug]) {
+    return {
+      title: `${CATEGORIES_MAP[slug]} 2026 – Latest Vacancies & Notices | NiyogDisha`,
+      description: `Explore verified ${CATEGORIES_MAP[slug]} notifications, eligibility, and apply online links on NiyogDisha.`,
+      alternates: { canonical: `https://niyogdisha-frontend.onrender.com/jobs/${slug}` },
+    };
+  }
   const job = await getJobBySlug(slug);
   if (!job) return { title: "Job Notification | NiyogDisha" };
   return {
@@ -23,13 +43,71 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function JobDetailPage({ params }: Props) {
   const { slug } = await params;
+
+  if (CATEGORIES_MAP[slug]) {
+    let jobs: any[] = [];
+    try {
+      const res = await getJobs();
+      jobs = Array.isArray(res) ? res : (res?.data || []);
+    } catch (e) {}
+
+    return (
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
+          <Link href="/" className="hover:text-[#152935]">Home</Link>
+          <ChevronRight className="w-3 h-3" />
+          <Link href="/jobs" className="hover:text-[#152935]">Jobs</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="font-semibold text-[#152935]">{CATEGORIES_MAP[slug]}</span>
+        </nav>
+
+        <div className="bg-[#FAF3EE] border border-[#CCD5D2] p-6 rounded-lg mb-6">
+          <h1 className="text-2xl font-extrabold text-[#152935] mb-2">{CATEGORIES_MAP[slug]}</h1>
+          <p className="text-xs sm:text-sm text-[#5F6B72]">
+            Browse 100% verified official notifications and updates under {CATEGORIES_MAP[slug]}.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {jobs.length === 0 ? (
+            <p className="text-sm text-gray-500 py-6 text-center">No active listings available in this category.</p>
+          ) : (
+            jobs.map((job: any) => (
+              <div key={job.id} className="p-4 border border-[#CCD5D2] rounded-lg bg-white shadow-xs hover:border-[#698EA2] transition">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="text-[11px] font-bold px-2 py-0.5 bg-[#CCD5D2] text-[#152935] rounded uppercase">
+                      {job.job_type || "CENTRAL"}
+                    </span>
+                    <h2 className="text-base font-bold text-[#152935] mt-1">
+                      <Link href={`/jobs/${job.slug}`} className="hover:underline">{job.title}</Link>
+                    </h2>
+                    <p className="text-xs text-gray-600 mt-1">{job.organization?.name || "Government Authority"}</p>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">
+                    {job.total_vacancies ? `${job.total_vacancies} Posts` : "Open"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mt-4 text-xs text-gray-500 border-t pt-3">
+                  <span>Last Date: <strong>{job.last_date ? new Date(job.last_date).toLocaleDateString() : "As per notice"}</strong></span>
+                  <Link href={`/jobs/${job.slug}`} className="bg-[#152935] text-white px-3 py-1.5 rounded font-bold hover:bg-[#698EA2] transition">
+                    View Details →
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  }
+
   const job = await getJobBySlug(slug);
 
   if (!job) {
     notFound();
   }
 
-  // Google JobPosting Structured Data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
@@ -54,13 +132,11 @@ export default async function JobDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      {/* Schema Script Injection */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb Navigation */}
       <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
         <Link href="/" className="hover:text-[#152935]">Home</Link>
         <ChevronRight className="w-3 h-3" />
@@ -71,7 +147,6 @@ export default async function JobDetailPage({ params }: Props) {
         </span>
       </nav>
 
-      {/* Header */}
       <div style={{ borderBottom: "1px solid #CCD5D2" }} className="pb-6">
         <div style={{ backgroundColor: "#FDE5D6", border: "1px solid #E4A576", color: "#152935" }} className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded mb-2">
           <ShieldCheck className="w-3.5 h-3.5" style={{ color: "#698EA2" }} />
@@ -85,7 +160,6 @@ export default async function JobDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Exam Lifecycle Visual Bar */}
       <div style={{ backgroundColor: "#FAF3EE", borderColor: "#CCD5D2" }} className="my-6 p-5 rounded-lg border">
         <h2 style={{ color: "#152935" }} className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
           <Clock className="w-4 h-4" style={{ color: "#698EA2" }} />
@@ -111,7 +185,6 @@ export default async function JobDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Quick Overview Table */}
       <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg overflow-hidden my-6">
         <div style={{ backgroundColor: "#152935", color: "#FFFFFF" }} className="px-4 py-2.5 text-xs sm:text-sm font-bold">
           Important Recruitment Summary
@@ -138,7 +211,6 @@ export default async function JobDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Official Working Links */}
       <div className="my-8">
         <h2 style={{ color: "#152935" }} className="text-base sm:text-lg font-bold mb-3">
           Verified Official Portal Links
