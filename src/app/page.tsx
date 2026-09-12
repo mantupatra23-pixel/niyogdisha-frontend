@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Search, Calendar, ChevronRight, ShieldCheck, ArrowUpRight, Award, FileText, CheckCircle2 } from "lucide-react";
-import { fetchJobs, fetchAdmitCards, fetchResults } from "@/lib/api";
+import { getJobs, getAdmitCards, getResults } from "@/lib/api/services";
 import CategoryGrid from "@/components/ui/CategoryGrid";
 
 export default async function HomePage() {
@@ -10,13 +10,13 @@ export default async function HomePage() {
 
   try {
     const [jobsData, admitCardsData, resultsData] = await Promise.all([
-      fetchJobs(),
-      fetchAdmitCards(),
-      fetchResults(),
+      getJobs(),
+      getAdmitCards(),
+      getResults(),
     ]);
-    jobs = jobsData?.data || [];
-    admitCards = admitCardsData?.data || [];
-    results = resultsData?.data || [];
+    jobs = Array.isArray(jobsData) ? jobsData : (jobsData?.data || []);
+    admitCards = Array.isArray(admitCardsData) ? admitCardsData : (admitCardsData?.data || []);
+    results = Array.isArray(resultsData) ? resultsData : (resultsData?.data || []);
   } catch (err) {
     // Graceful fallback on network/API failure
   }
