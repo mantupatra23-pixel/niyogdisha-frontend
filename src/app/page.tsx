@@ -30,7 +30,6 @@ interface AdmitCard {
   title: string;
   download_url?: string;
   release_date?: string;
-  organization?: string;
 }
 
 interface Result {
@@ -68,7 +67,7 @@ export default async function HomePage() {
     results = Array.isArray(resultsRes) ? resultsRes : ((resultsRes as { data?: Result[] })?.data || []);
     answerKeys = Array.isArray(answerRes) ? answerRes : ((answerRes as { data?: AnswerKey[] })?.data || []);
   } catch {
-    // Graceful fallback on API failure
+    // Fallback on API failure
   }
 
   const now = new Date();
@@ -150,6 +149,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Hot Updates Matrix */}
       <div className="max-w-6xl mx-auto px-4 pt-6">
         <div className="flex items-center justify-between mb-3 border-b pb-2 border-[#CCD5D2]">
           <h2 className="text-sm sm:text-base font-extrabold text-[#152935] flex items-center gap-2">
@@ -179,8 +179,7 @@ export default async function HomePage() {
           {admitCards.slice(0, 3).map((item) => (
             <Link
               key={`admit-${item.id}`}
-              href={item.download_url || "#"}
-              target="_blank"
+              href={`/admit-card/${item.slug || item.id}`}
               style={{ borderColor: "#CCD5D2", backgroundColor: "#E2EBE8" }}
               className="p-2.5 rounded border hover:border-[#152935] transition block text-center"
             >
@@ -191,15 +190,14 @@ export default async function HomePage() {
                 {item.title}
               </span>
               <span className="text-[10px] text-blue-800 font-semibold mt-1 block">
-                Download →
+                View →
               </span>
             </Link>
           ))}
           {results.slice(0, 3).map((res) => (
             <Link
               key={`res-${res.id}`}
-              href={res.result_url || "#"}
-              target="_blank"
+              href={`/results/${res.slug || res.id}`}
               style={{ borderColor: "#CCD5D2", backgroundColor: "#FDE5D6" }}
               className="p-2.5 rounded border hover:border-[#152935] transition block text-center"
             >
@@ -235,8 +233,11 @@ export default async function HomePage() {
         </div>
       )}
 
+      {/* Primary 3-Column Scanner */}
       <main className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Results Column */}
           <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-xs flex flex-col">
             <div style={{ backgroundColor: "#E4A576", borderBottom: "3px solid #152935", color: "#152935" }} className="px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-xs sm:text-sm tracking-wide">
@@ -256,16 +257,14 @@ export default async function HomePage() {
                     <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded inline-block mb-1">
                       DECLARED RESULT
                     </span>
-                    <a
-                      href={res.result_url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href={`/results/${res.slug || res.id}`}
                       style={{ color: "#152935" }}
                       className="text-xs sm:text-sm font-bold flex items-center justify-between gap-1 hover:text-[#698EA2]"
                     >
                       <span className="line-clamp-2">{res.title}</span>
                       <ArrowUpRight className="w-4 h-4 flex-shrink-0 text-[#E4A576]" />
-                    </a>
+                    </Link>
                     {res.cutoff_details && (
                       <p className="mt-1 text-[11px] text-gray-600 bg-gray-50 p-1.5 rounded border border-gray-200">
                         <strong>Cutoff:</strong> {res.cutoff_details}
@@ -277,6 +276,7 @@ export default async function HomePage() {
             </div>
           </div>
 
+          {/* Admit Cards Column */}
           <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-xs flex flex-col">
             <div style={{ backgroundColor: "#698EA2", borderBottom: "3px solid #152935" }} className="text-white px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-xs sm:text-sm tracking-wide">
@@ -296,16 +296,14 @@ export default async function HomePage() {
                     <span style={{ color: "#698EA2" }} className="text-[10px] font-bold block mb-1 uppercase">
                       HALL TICKET / EXAM SLIP
                     </span>
-                    <a
-                      href={item.download_url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href={`/admit-card/${item.slug || item.id}`}
                       style={{ color: "#152935" }}
                       className="text-xs sm:text-sm font-bold flex items-center justify-between gap-1 hover:text-[#698EA2]"
                     >
                       <span className="line-clamp-2">{item.title}</span>
                       <ArrowUpRight className="w-4 h-4 flex-shrink-0 text-[#698EA2]" />
-                    </a>
+                    </Link>
                     {item.release_date && (
                       <div className="mt-1 text-[11px] text-gray-500 flex items-center gap-1">
                         <Calendar className="w-3 h-3 text-[#698EA2]" />
@@ -318,6 +316,7 @@ export default async function HomePage() {
             </div>
           </div>
 
+          {/* Latest Notifications Column */}
           <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-sm flex flex-col">
             <div style={{ backgroundColor: "#152935", borderBottom: "3px solid #E4A576" }} className="text-white px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-xs sm:text-sm tracking-wide">
@@ -369,6 +368,7 @@ export default async function HomePage() {
         </div>
       </main>
 
+      {/* Qualification Bar */}
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div style={{ backgroundColor: "#152935", color: "#FFFFFF" }} className="p-4 rounded-lg shadow-sm">
           <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2">
@@ -399,6 +399,7 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* Answer Keys & State Navigation */}
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-xs">
@@ -412,8 +413,8 @@ export default async function HomePage() {
               ) : (
                 answerKeys.map((ak) => (
                   <div key={ak.id} className="p-3 hover:bg-gray-50 flex justify-between items-center">
-                    <span className="font-bold text-[#152935] line-clamp-1">{ak.title}</span>
-                    <a href={ak.answer_key_url || ak.download_url || "#"} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold whitespace-nowrap ml-2">Download ↗</a>
+                    <Link href={`/answer-key/${ak.slug || ak.id}`} className="font-bold text-[#152935] line-clamp-1 hover:underline">{ak.title}</Link>
+                    <Link href={`/answer-key/${ak.slug || ak.id}`} className="text-blue-600 font-semibold whitespace-nowrap ml-2 hover:underline">View ↗</Link>
                   </div>
                 ))
               )}
