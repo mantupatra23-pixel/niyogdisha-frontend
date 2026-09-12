@@ -11,7 +11,7 @@ interface Props {
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Exam Result & Cut-off List | NiyogDisha`,
-    description: `Check official merit lists, category-wise cut-off scores and final results for recruitment exams.`,
+    description: `Check official merit lists, category-wise cut-off scores, and final results for recruitment exams.`,
     alternates: { canonical: `https://niyogdisha-frontend.onrender.com/results` },
   };
 }
@@ -27,7 +27,7 @@ export default async function ResultDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-gray-900">
       <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
         <Link href="/" className="hover:text-[#152935]">Home</Link>
         <ChevronRight className="w-3 h-3" />
@@ -36,17 +36,17 @@ export default async function ResultDetailPage({ params }: Props) {
         <span className="font-semibold text-[#152935] line-clamp-1">{resultItem.title}</span>
       </nav>
 
-      <div className="bg-white border border-[#CCD5D2] p-6 rounded-lg shadow-sm mb-6">
+      <div className="bg-white border border-[#CCD5D2] p-6 rounded-lg shadow-xs mb-6">
         <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded mb-2 bg-emerald-100 text-emerald-800">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Declared Result & Merit List</span>
+          <span>Declared Merit List &amp; Result</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#152935]">{resultItem.title}</h1>
       </div>
 
       {resultItem.cutoff_details && (
-        <div className="border border-[#CCD5D2] rounded-lg p-5 bg-[#FAF3EE] mb-6">
-          <h2 className="text-sm font-bold text-[#152935] mb-2">Category-wise Cut-off Details</h2>
+        <div className="border border-[#CCD5D2] rounded-lg p-5 bg-[#FAF3EE] mb-6 shadow-xs">
+          <h2 className="text-sm font-bold text-[#152935] mb-2">Category-wise Cut-off Scores</h2>
           <p className="text-xs sm:text-sm text-gray-700 font-medium">{resultItem.cutoff_details}</p>
         </div>
       )}

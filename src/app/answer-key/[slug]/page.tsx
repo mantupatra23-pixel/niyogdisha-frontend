@@ -11,7 +11,7 @@ interface Props {
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Answer Key & Response Sheet | NiyogDisha`,
-    description: `Check official provisional answer keys and response sheets for government examinations.`,
+    description: `Check official provisional answer keys, response sheets, and objection submission links.`,
     alternates: { canonical: `https://niyogdisha-frontend.onrender.com/answer-key` },
   };
 }
@@ -27,7 +27,7 @@ export default async function AnswerKeyDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-gray-900">
       <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
         <Link href="/" className="hover:text-[#152935]">Home</Link>
         <ChevronRight className="w-3 h-3" />
@@ -36,12 +36,17 @@ export default async function AnswerKeyDetailPage({ params }: Props) {
         <span className="font-semibold text-[#152935] line-clamp-1">{ansKey.title}</span>
       </nav>
 
-      <div className="bg-white border border-[#CCD5D2] p-6 rounded-lg shadow-sm mb-6">
+      <div className="bg-white border border-[#CCD5D2] p-6 rounded-lg shadow-xs mb-6">
         <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded mb-2 bg-[#FAF3EE] text-[#152935] border border-[#E4A576]">
           <FileText className="w-3.5 h-3.5 text-[#E4A576]" />
-          <span>Official Answer Key Published</span>
+          <span>Official Provisional Answer Key</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#152935]">{ansKey.title}</h1>
+      </div>
+
+      <div className="bg-[#FAF3EE] border border-[#CCD5D2] p-5 rounded-lg mb-6 text-xs sm:text-sm text-gray-700">
+        <p className="font-bold text-[#152935] mb-1">How to raise objections?</p>
+        <p>If candidates find any discrepancy in the provisional answer key, they can submit online representations through the official portal before the closing deadline by paying the prescribed fee per question.</p>
       </div>
 
       <div className="my-6">
@@ -51,7 +56,7 @@ export default async function AnswerKeyDetailPage({ params }: Props) {
           rel="noopener noreferrer"
           className="flex items-center justify-between p-4 rounded-lg bg-[#E4A576] text-[#152935] font-bold text-sm hover:opacity-90 transition shadow-md"
         >
-          <span>Download Official Answer Key PDF</span>
+          <span>Open Official Answer Key &amp; Objection Portal</span>
           <ExternalLink className="w-5 h-5 text-[#152935]" />
         </a>
       </div>
