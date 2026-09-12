@@ -80,7 +80,7 @@ export default async function HomePage() {
   });
 
   return (
-    <div className="w-full bg-white min-h-screen text-gray-900">
+    <div className="w-full bg-white min-h-screen text-gray-900 pb-12">
       {/* Top Banner Stripe */}
       <div style={{ backgroundColor: "#152935", color: "#FDE5D6" }} className="w-full py-2 px-4 text-center text-xs sm:text-sm font-bold tracking-wide border-b border-[#CCD5D2]">
         ⚡ Verified Sarkari Recruitment &amp; Exam Lifecycle Portal 2026 — Official Source Mapped
@@ -318,7 +318,7 @@ export default async function HomePage() {
           </div>
 
           {/* Latest Notifications Column */}
-          <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-xs flex flex-col">
+          <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg bg-white overflow-hidden shadow-sm flex flex-col">
             <div style={{ backgroundColor: "#152935", borderBottom: "3px solid #E4A576" }} className="text-white px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-xs sm:text-sm tracking-wide">
                 <FileText className="w-4 h-4 text-[#E4A576]" />
@@ -469,40 +469,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* SINGLE CLEAN UNIFIED FOOTER */}
-      <footer style={{ backgroundColor: "#152935", color: "#FDE5D6" }} className="mt-12 py-8 px-4 text-xs border-t border-[#CCD5D2]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div>
-            <h3 className="font-bold text-sm text-white mb-2">NiyogDisha</h3>
-            <p className="text-gray-300">High-performance verified Indian government jobs and exam lifecycle tracking engine.</p>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-2">Quick Links</h4>
-            <ul className="space-y-1 text-gray-300">
-              <li><Link href="/" className="hover:underline">Home</Link></li>
-              <li><Link href="/jobs" className="hover:underline">Government Jobs</Link></li>
-              <li><Link href="/admit-card" className="hover:underline">Admit Card</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-2">Exam Lifecycle</h4>
-            <ul className="space-y-1 text-gray-300">
-              <li><Link href="/answer-key" className="hover:underline">Answer Keys</Link></li>
-              <li><Link href="/results" className="hover:underline">Results &amp; Cut-off</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-2">Legal &amp; Trust</h4>
-            <p className="text-gray-300 leading-relaxed">
-              NiyogDisha is an independent information portal and is NOT affiliated with any government body. Always verify notices on official websites.
-            </p>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto border-t border-white/10 pt-4 text-center text-gray-400">
-          © 2026 NiyogDisha. All rights reserved. High-Performance Clean Information Portal.
-        </div>
-      </footer>
     </div>
   );
 }
