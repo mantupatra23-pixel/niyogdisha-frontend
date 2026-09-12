@@ -1,77 +1,68 @@
 import Link from "next/link";
 import { getAdmitCards } from "@/lib/api/services";
-import { Award, Calendar, ExternalLink, ShieldCheck } from "lucide-react";
+import { ChevronRight, Award, ExternalLink, Calendar } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admit Cards & Exam Hall Tickets 2026",
-  description: "Download verified Admit Cards, Call Letters, and Exam Hall Tickets for Central & State recruitments.",
+  title: "Government Exam Admit Cards & Hall Tickets 2026 | NiyogDisha",
+  description: "Download hall tickets, exam city intimation slips, and call letters for central and state government recruitment exams.",
+  alternates: { canonical: "https://niyogdisha-frontend.onrender.com/admit-card" },
 };
 
-export default async function AdmitCardPage() {
-  const cards = await getAdmitCards();
+export default async function AdmitCardsPage() {
+  let admitCards: any[] = [];
+  try {
+    const res = (await getAdmitCards()) as any;
+    admitCards = Array.isArray(res) ? res : (res?.data || []);
+  } catch {}
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div style={{ borderBottom: "1px solid #CCD5D2" }} className="pb-5 mb-6">
-        <div style={{ backgroundColor: "#FDE5D6", border: "1px solid #E4A576", color: "#152935" }} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-2">
-          <ShieldCheck className="w-3.5 h-3.5" style={{ color: "#698EA2" }} />
-          <span>Official Hall Tickets</span>
-        </div>
-        <h1 style={{ color: "#152935" }} className="text-2xl sm:text-3xl font-extrabold">
-          Govt Exam Admit Cards &amp; Hall Tickets
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
+        <Link href="/" className="hover:text-[#152935]">Home</Link>
+        <ChevronRight className="w-3 h-3" />
+        <span className="font-semibold text-[#152935]">Admit Cards</span>
+      </nav>
+
+      <div className="bg-[#FAF3EE] border border-[#CCD5D2] p-6 rounded-lg mb-6 shadow-xs">
+        <h1 className="text-2xl font-extrabold text-[#152935] mb-2 flex items-center gap-2">
+          <Award className="w-6 h-6 text-[#698EA2]" />
+          Exam Admit Cards &amp; Hall Tickets
         </h1>
-        <p style={{ color: "#5F6B72" }} className="text-xs sm:text-sm mt-1">
-          Direct verified links to download examination call letters and admit cards.
+        <p className="text-xs sm:text-sm text-[#5F6B72]">
+          Download verified hall tickets and check exam center city intimation slips for active recruitment exams.
         </p>
       </div>
 
-      {cards.length === 0 ? (
-        <div style={{ borderColor: "#CCD5D2" }} className="border rounded-lg p-10 text-center text-sm text-gray-500">
-          No admit cards currently active for download.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {cards.map((item) => (
-            <div
-              key={item.id}
-              style={{ borderColor: "#CCD5D2" }}
-              className="border rounded-lg p-5 bg-white shadow-xs flex flex-col justify-between hover:border-[#698EA2] transition-colors"
-            >
+      <div className="space-y-3">
+        {admitCards.length === 0 ? (
+          <p className="text-sm text-gray-500 py-8 text-center bg-white border border-[#CCD5D2] rounded-lg">No active admit cards available.</p>
+        ) : (
+          admitCards.map((item: any) => (
+            <div key={item.id} className="p-4 bg-white border border-[#CCD5D2] rounded-lg shadow-xs hover:border-[#152935] transition flex items-center justify-between">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span style={{ backgroundColor: "#CCD5D2", color: "#152935" }} className="text-[11px] font-bold px-2 py-0.5 rounded">
-                    HALL TICKET
-                  </span>
-                  {item.release_date && (
-                    <span className="text-[11px] text-gray-500 flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-[#698EA2]" />
-                      Release: {new Date(item.release_date).toLocaleDateString("en-IN")}
-                    </span>
-                  )}
-                </div>
-                <h2 style={{ color: "#152935" }} className="text-sm sm:text-base font-bold leading-snug">
-                  {item.title}
-                </h2>
+                <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded uppercase">Hall Ticket</span>
+                <h2 className="text-sm sm:text-base font-bold text-[#152935] mt-1">{item.title}</h2>
+                {item.release_date && (
+                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-[#698EA2]" />
+                    <span>Released: {new Date(item.release_date).toLocaleDateString("en-IN")}</span>
+                  </p>
+                )}
               </div>
-
-              <div style={{ borderTop: "1px solid #CCD5D2" }} className="mt-5 pt-4 flex items-center justify-between">
-                <span className="text-[11px] text-emerald-700 font-semibold">Official Source</span>
-                <a
-                  href={item.download_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ backgroundColor: "#152935", color: "#FFFFFF" }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded hover:bg-[#698EA2] transition-colors"
-                >
-                  <span>Download</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
+              <a
+                href={item.download_url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#698EA2] text-white px-4 py-2 rounded text-xs font-bold hover:bg-[#152935] transition flex items-center gap-1.5 flex-shrink-0"
+              >
+                <span>Download</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }
