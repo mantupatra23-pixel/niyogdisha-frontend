@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AdmitCardDetailPage({ params }: Props) {
   const { slug } = await params;
-  const res = await getAdmitCards();
+  const res = (await getAdmitCards()) as any;
   const items = Array.isArray(res) ? res : (res?.data || []);
   const admitCard = items.find((item: any) => item.slug === slug || item.id?.toString() === slug);
 

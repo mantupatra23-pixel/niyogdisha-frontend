@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AnswerKeyDetailPage({ params }: Props) {
   const { slug } = await params;
-  const res = await getAnswerKeys();
+  const res = (await getAnswerKeys()) as any;
   const items = Array.isArray(res) ? res : (res?.data || []);
   const ansKey = items.find((item: any) => item.slug === slug || item.id?.toString() === slug);
 

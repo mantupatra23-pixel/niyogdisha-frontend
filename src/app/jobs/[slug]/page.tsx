@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       alternates: { canonical: `https://niyogdisha-frontend.onrender.com/jobs/${slug}` },
     };
   }
-  const job = await getJobBySlug(slug);
+  const job = (await getJobBySlug(slug)) as any;
   if (!job) return { title: "Job Notification | NiyogDisha" };
   return {
     title: `${job.title} — Notification, Dates & Apply Online`,
@@ -47,7 +47,7 @@ export default async function JobDetailPage({ params }: Props) {
   if (CATEGORIES_MAP[slug]) {
     let jobs: any[] = [];
     try {
-      const res = await getJobs();
+      const res = (await getJobs()) as any;
       jobs = Array.isArray(res) ? res : (res?.data || []);
     } catch (e) {}
 
@@ -102,7 +102,7 @@ export default async function JobDetailPage({ params }: Props) {
     );
   }
 
-  const job = await getJobBySlug(slug);
+  const job = (await getJobBySlug(slug)) as any;
 
   if (!job) {
     notFound();

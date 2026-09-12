@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ResultDetailPage({ params }: Props) {
   const { slug } = await params;
-  const res = await getResults();
+  const res = (await getResults()) as any;
   const items = Array.isArray(res) ? res : (res?.data || []);
   const resultItem = items.find((item: any) => item.slug === slug || item.id?.toString() === slug);
 
